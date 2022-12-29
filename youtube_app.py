@@ -3,10 +3,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from app import download_audio, download_playlist, download_video
+import os
+
+
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '52e66e95b7546964d8321d3916ee1eaa'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 
 # Formulario
