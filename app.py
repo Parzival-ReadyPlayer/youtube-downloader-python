@@ -12,7 +12,7 @@ def download_audio(link):
     youtube_object = youtube_object.streams.get_audio_only()
     # Destination of the file
     destination = os.environ.get('PATH')
-    print(f'Este es el path de destino: TARAN TARAN  {destination}')
+    print(f'Este es el path de destino: TARAN TARAN .. {destination}')
     
     try:
         # Download object and put the file on the destination
