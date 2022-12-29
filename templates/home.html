@@ -1,0 +1,22 @@
+{% extends 'layout.html' %} 
+
+{% block content %}
+
+<h2 class="mt-3 text-center">Youtube Video Downloader</h2>
+
+<!-- Form -->
+<div class="form-group">
+    
+  <form action="{{ url_for('home') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+      {{ form.link (class="form-control form-control-lg", placeholder='Ingrese link..', autocomplete=off)}} 
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-lg btn-danger mt-3" id = "download_btn">
+          Convert
+        </button>
+      </div>
+  </form>
+</div>
+
+
+{% endblock content %}

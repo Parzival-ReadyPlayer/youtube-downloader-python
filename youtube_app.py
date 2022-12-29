@@ -1,7 +1,9 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, render_template, url_for, redirect, request, flash, send_file, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from io import BytesIO
+from pytube import YouTube
 from app import download_audio, download_playlist, download_video
 import os
 
@@ -50,7 +52,7 @@ def playlist():
         link = request.form.get('link')
         while True:
             try:
-                download_playlist(link)
+                download_audio()
                 flash('Download complete', 'success')
                 return redirect('playlist')
             except:
@@ -82,5 +84,49 @@ def video():
     return render_template('video.html', form = form)
 
 
+
+
+
+@app.route("/home", methods = ["GET", "POST"])
+def home():
+    form = linkForm()
+    if request.method == "POST":
+        session['link'] = request.form.get('link')
+        try:
+            url = YouTube(session['link'])
+            url.check_availability()
+        except:
+            flash('Link invalido', 'danger')
+            return redirect('home')
+        return render_template("download.html", url = url, form = form)
+    return render_template("home.html", form=form)
+
+@app.route("/download", methods = ["GET", "POST"])
+def download_video():
+    if request.method == "POST":
+        buffer = BytesIO()
+        url = YouTube(session['link'])
+        name = url.title
+        itag = request.form.get("itag")
+        video = url.streams.get_by_itag(itag)
+        video.stream_to_buffer(buffer)
+        buffer.seek(0)
+        return send_file(buffer, as_attachment=True, download_name=name, mimetype="video/mp4")
+    return redirect(url_for("home"))
+
+
+
+@app.route("/download_audio", methods = ["GET", "POST"])
+def download_audio():
+    if request.method == "POST":
+        buffer = BytesIO()
+        url = YouTube(session['link'])
+        name = url.title
+        audio = url.streams.get_audio_only()
+        audio.stream_to_buffer(buffer)
+        buffer.seek(0)
+        return send_file(buffer, as_attachment=True, download_name=name, mimetype="audio/mpeg")
+    return redirect(url_for("index"))
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
