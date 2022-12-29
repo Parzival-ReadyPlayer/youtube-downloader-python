@@ -1,7 +1,7 @@
 from pytube import YouTube, Playlist
 from os.path import expanduser
 import pytube.request
-import os, sys
+import os
 
 pytube.request.default_range_size = 1048576 
 
@@ -25,6 +25,7 @@ def download_audio(link):
     youtube_object = youtube_object.streams.get_audio_only()
     # Destination of the file
     destination = NEW_PATH
+    print(destination)
     
     try:
         # Download object and put the file on the destination
