@@ -11,7 +11,7 @@ def download_audio(link):
     youtube_object = YouTube(link)
     youtube_object = youtube_object.streams.get_audio_only()
     # Destination of the file
-    destination = os.environ.get('NEW_PATH')
+    destination = os.environ.get('PATH')
     print(f'Este es el path de destino: {destination}')
     
     try:
@@ -40,7 +40,7 @@ def download_playlist(link):
         # Create a playlist object
         playlist = Playlist(str(link))
         
-        destination = os.environ.get('NEW_PATH')
+        destination = os.environ.get('PATH')
         try:
             # Loop for videos in a playlist
             for video in playlist.videos:
@@ -65,7 +65,7 @@ def download_video(link):
     youtube_object = YouTube(link)
     youtube_object = youtube_object.streams.get_highest_resolution()
     # Destination of the file
-    destination = os.environ.get('NEW_PATH')
+    destination = os.environ.get('PATH')
     
     try:
         # Download object and put the file on the destination
