@@ -1,1 +1,1 @@
-web: gunicorn app:youtube_app
+web: gunicorn youtube_app:app
