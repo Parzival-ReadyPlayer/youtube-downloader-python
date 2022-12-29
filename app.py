@@ -25,7 +25,7 @@ def download_audio(link):
     youtube_object = youtube_object.streams.get_audio_only()
     # Destination of the file
     destination = NEW_PATH
-    print(destination)
+    print(f'Este es el path de destino: {destination}')
     
     try:
         # Download object and put the file on the destination
