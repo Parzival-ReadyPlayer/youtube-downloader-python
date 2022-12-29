@@ -4,7 +4,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from io import BytesIO
 from pytube import YouTube
-from app import download_audio, download_playlist, download_video
+from app import download_playlist, download_video, download_audio
 import os
 
 
@@ -21,6 +21,7 @@ class linkForm(FlaskForm):
     
 # Ruta audio
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # Create form
@@ -29,12 +30,11 @@ def index():
         flash('Iniciando descarga, espere por favor..', 'warning')
         # Get link from form
         link = request.form.get('link')
-        
         while True:
             # Try catch block, if the input is not valid we print a error message
             try:
                 # Call function
-                audio = download_audio(link)
+                download_audio(link)
                 flash('Download succesfull', 'success')
                 return redirect(url_for('index'))
             except:
@@ -52,7 +52,7 @@ def playlist():
         link = request.form.get('link')
         while True:
             try:
-                download_audio()
+                download_playlist(link)
                 flash('Download complete', 'success')
                 return redirect('playlist')
             except:
@@ -122,11 +122,11 @@ def download_audio():
         buffer = BytesIO()
         url = YouTube(session['link'])
         name = url.title
-        audio = url.streams.get_audio_only()
-        audio.stream_to_buffer(buffer)
+        video = url.streams.get_audio_only()
+        video.stream_to_buffer(buffer)
         buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name=name, mimetype="audio/mpeg")
-    return redirect(url_for("index"))
+        return send_file(buffer, as_attachment=True, download_name=name, mimetype="video/mp4")
+    return redirect(url_for("home"))
 
 if __name__ == '__main__':
     app.run(debug=True)
