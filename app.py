@@ -11,7 +11,7 @@ def download_audio(link):
     youtube_object = YouTube(link)
     youtube_object = youtube_object.streams.get_audio_only()
     # Destination of the file
-    destination = os.environ.get('PATH')
+    destination = '/home/parzival/Descargas'
     print(f'Este es el path de destino: TARAN TARAN .. {destination}')
     
     try:
