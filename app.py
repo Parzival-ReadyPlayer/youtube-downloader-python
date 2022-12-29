@@ -38,7 +38,7 @@ def download_audio(link):
         # Rename the file, first argument old file, second argumet new_file
         os.rename(audio, new_file)
     except:
-        print('DOWNLOAD FAILED')
+        print('DOWNLOAD FAILED!')
     
     
         
