@@ -36,14 +36,6 @@ def home():
     return render_template("home.html", form=form)
 
 
-
-
-
-
-
-
-
-
 @app.route("/download_audio", methods = ["GET", "POST"])
 def download_audio():
     if request.method == "POST":
