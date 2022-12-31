@@ -50,6 +50,28 @@
         </form>
     </div>
     </div>
+
+    <!--Playlist-->
+
+    <div class="col-md-4">
+      <h2 class="text-center">Audio downloader</h2>
+
+      <!--Formulario playlist-->
+      <form method="POST" action="{{ url_for('download_playlist') }}">
+        <div class="card-text text-center">
+          <button class="btn btn-warning mt-3" type="" href="{{ url_for('download_playlist') }}">
+            Download playlist
+          </button>
+        </div>
+      </form>
+  </div>
+  </div>
+  </div>
+
+  <div class="row">
+    <div class="col-auto">
+      <a class="btn btn-info btn-block" href="{{url_for('home') }}">Volver al inicio</a>
+    </div>
   </div>
 </div>
 

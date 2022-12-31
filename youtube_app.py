@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from io import BytesIO
-from pytube import YouTube
+from pytube import YouTube, Playlist
 from app import download_playlist, download_video, download_audio
 import os
 
@@ -38,6 +38,39 @@ def home():
 
 
 
+
+@app.route("/download_playlist", methods = ["GET", "POST"])
+def download_playlist():
+    if request.method == "POST":
+        buffer = BytesIO()
+        url = Playlist(session['link'])
+        print(url)
+        
+        for video in url.videos:
+            name = video.title + '.mp3'
+            audio = video.streams.get_audio_only()
+            audio.stream_to_buffer(buffer)
+            buffer.seek(0)
+            print(video)
+           
+    return redirect(url_for("convert_playlist"))
+
+
+@app.route("/convert_playlist", methods = ["GET", "POST"])
+def convert_playlist():
+    form = linkForm()
+    if request.method == "POST":
+        session['link'] = request.form.get('link')
+        try:
+            url = Playlist(session['link'])
+        except:
+            flash('Link invalido', 'danger')
+        return render_template('playlist.html', url=url, form=form)
+    return render_template("convert_playlist.html", form=form)
+
+
+
+
 @app.route("/download_audio", methods = ["GET", "POST"])
 def download_audio():
     if request.method == "POST":
@@ -62,6 +95,9 @@ def download_video():
         buffer.seek(0)
         return send_file(buffer, as_attachment=True, download_name=name, mimetype='video/mp4')
     return redirect(url_for("home"))
+
+
+
 
 
 if __name__ == '__main__':
