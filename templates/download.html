@@ -23,10 +23,13 @@
                           {% endfor %}
                       </select>
                     </div>
-                    <button type="submit" class="btn btn-danger mt-3" id = "download_btn">
-                      Download
-                    </button>
-                    
+                    <div>
+                      <button type="submit" class="btn btn-danger mt-3" id = "download_btn">
+                        Download video
+                      </button>
+
+                     <button class="btn btn-info mt-3" type="submit" href="{{ url_for('download_audio') }}">Descargar audio </button>
+                    </div>
                   </p>
                 </div>
               </div>

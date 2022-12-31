@@ -89,6 +89,7 @@ def video():
 
 @app.route("/home", methods = ["GET", "POST"])
 def home():
+    
     form = linkForm()
     if request.method == "POST":
         session['link'] = request.form.get('link')
@@ -115,17 +116,16 @@ def download_video():
     return redirect(url_for("home"))
 
 
-
 @app.route("/download_audio", methods = ["GET", "POST"])
 def download_audio():
     if request.method == "POST":
         buffer = BytesIO()
         url = YouTube(session['link'])
         name = url.title
-        video = url.streams.get_audio_only()
-        video.stream_to_buffer(buffer)
+        audio = url.streams.get_audio_only()
+        audio.stream_to_buffer(buffer)
         buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name=name, mimetype="video/mp4")
+        return send_file(buffer, as_attachment=True, download_name=name, mimetype="audio/mp3")
     return redirect(url_for("home"))
 
 if __name__ == '__main__':
