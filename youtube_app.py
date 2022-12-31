@@ -21,7 +21,7 @@ class linkForm(FlaskForm):
     
 
 
-@app.route("/home", methods = ["GET", "POST"])
+@app.route("/", methods = ["GET", "POST"])
 def home():
     form = linkForm()
     if request.method == "POST":
