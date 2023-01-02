@@ -4,7 +4,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from io import BytesIO
 from pytube import YouTube, Playlist
-import zipfile
+from zipfile import ZipFile
 import os
 
 
@@ -99,35 +99,50 @@ def playlist():
 
 
 
+# Crea una función para descargar una canción individual
+def download_song(video):
+    # Crea un buffer de bytes para almacenar el audio
+    buffer = BytesIO()
+
+    # Obtiene el título de la canción y el audio en formato MP3
+    name = video.title + '.mp3'
+    audio = video.streams.get_audio_only()
+
+    # Escribe el audio en el buffer
+    audio.stream_to_buffer(buffer)
+
+    # Regresa al principio del buffer
+    buffer.seek(0)
+
+    # Regresa el buffer como un archivo adjunto
+    return buffer
 
 @app.route("/playlist_download", methods = ["POST"])
 def playlist_download():
-    
-    if request.method == 'POST':
-        playlist = Playlist(session['link'])
-        buffer = BytesIO()
-        
-       
-        
+    # Crea un buffer de bytes para almacenar el archivo ZIP
+    buffer = BytesIO()
 
-        for video in playlist.videos:
-            name = video.title + '.mp3'
-            audio = video.streams.get_audio_only()
-            audio.stream_to_buffer(buffer)
-            buffer.seek(0)
-            return send_file(buffer, as_attachment=True, download_name=name)
-       
-    
-       
-            
-            
-    
-            
-            
-            
-    
-    return redirect(url_for('playlist'))
-    
+    # Crea un archivo ZIP en el buffer
+    with ZipFile(buffer, 'w') as zip:
+        # Si se hace una solicitud POST
+        if request.method == 'POST':
+            # Crea una instancia de Playlist con la URL de la playlist
+            playlist = Playlist(session['link'])
+
+            # Para cada video en la playlist
+            for video in playlist.videos:
+                # Descarga la canción
+                song = download_song(video)
+
+                # Agrega la canción al archivo ZIP
+                zip.writestr(video.title + '.mp3', song.getvalue())
+
+    # Regresa al principio del buffer
+    buffer.seek(0)
+
+    # Regresa el buffer como un archivo adjunto
+    return send_file(buffer, as_attachment=True, mimetype='application/zip', download_name='playlist.zip')
+
 
 
 
