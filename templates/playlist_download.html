@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <!--Audio downloader-->
+    <div class="col-md-4">
+        <h2 class="text-center">Playlist downloader</h2>
+
+        <!--Formulario audio-->
+        <form method="POST" action="{{ url_for('playlist_download') }}">
+          <div class="card-text text-center">
+            <button class="btn btn-warning mt-3" type="" href="{{ url_for('playlist_download') }}">
+              Download playlist 
+            </button>
+          </div>
+        </form>
+    </div>
+    </div>
+
+{% endblock content %}
+
+
+
