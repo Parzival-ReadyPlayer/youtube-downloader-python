@@ -1,11 +1,12 @@
-from flask import Flask, render_template, url_for, redirect, request, flash, send_file, session
+from flask import Flask, render_template, url_for, redirect, request, flash, send_file, session, make_response
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from io import BytesIO
 from pytube import YouTube, Playlist
 from zipfile import ZipFile
-import os
+import os, requests
+
 
 
 
@@ -23,20 +24,42 @@ class playlistForm(FlaskForm):
     link = StringField('Playlist', validators=[DataRequired()])
     submit = SubmitField('Convertir')
     
+def is_valid_url(url):
+    try:
+        # Hace una solicitud a la URL y almacena la respuesta
+        response = requests.get(url)
 
+        # Si la respuesta tiene un código de estado OK (200)
+        if response.status_code == 200:
+            # Regresa True
+            return True
+        else:
+            # Si no es OK, regresa False
+            return False
+    except:
+        # Si ocurre cualquier otro error, regresa False
+        return False
 
 @app.route("/", methods = ["GET", "POST"])
 def home():
     form = linkForm()
+    
     if request.method == "POST":
-        session['link'] = request.form.get('link')
         try:
-            url = YouTube(session['link'])
-            url.check_availability()
+            
+            if is_valid_url(request.form.get('link')):
+                session['link'] = request.form.get('link')
+                try:
+                    url = YouTube(session['link'])
+                    url.check_availability()
+                except:
+                    print("url no disponible")
+                return render_template("download.html", url = url, form = form)
+            else:
+                flash('No es un link valido', 'danger')
         except:
             flash('Link invalido', 'danger')
-            return redirect('home')
-        return render_template("download.html", url = url, form = form)
+            return redirect(url_for('home'))
     return render_template("home.html", form=form)
 
 
@@ -117,6 +140,8 @@ def download_song(video):
     # Regresa el buffer como un archivo adjunto
     return buffer
 
+
+
 @app.route("/playlist_download", methods = ["POST"])
 def playlist_download():
     # Crea un buffer de bytes para almacenar el archivo ZIP
@@ -128,6 +153,10 @@ def playlist_download():
         if request.method == 'POST':
             # Crea una instancia de Playlist con la URL de la playlist
             playlist = Playlist(session['link'])
+            
+            name_playlist = playlist.title
+            
+            print(name_playlist)
 
             # Para cada video en la playlist
             for video in playlist.videos:
@@ -139,14 +168,9 @@ def playlist_download():
 
     # Regresa al principio del buffer
     buffer.seek(0)
-
-    # Regresa el buffer como un archivo adjunto
-    return send_file(buffer, as_attachment=True, mimetype='application/zip', download_name='playlist.zip')
-
-
-
-
-
+    
+    # Crea una respuesta con el archivo adjunto
+    return send_file(buffer, as_attachment=True, mimetype='application/zip', download_name=name_playlist + '.zip')
 
 
 

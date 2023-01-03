@@ -23,7 +23,7 @@
           <select name="itag" class="form-select input-sm" aria-label="Default select example">
             <!--Calidad del video-->
             {% for i in url.streams.filter(progressive=True) %}
-                <option value="{{ i.itag }}"> {{ i.resolution }} </option>
+                <option value="{{ i.itag }}"> {{ i.resolution }}  ({{ i.filesize_mb }} MB)</option>
             {% endfor %}
           </select>
           <!--Boton para descargar-->
@@ -48,20 +48,18 @@
             </button>
           </div>
         </form>
+        <div class="text-center mt-4">
+          <a class="btn btn-info btn-block" href="{{url_for('home') }}">Home</a>
+        </div>
+
     </div>
     </div>
 
-    <!--Playlist-->
-
+   
     
   </div>
   </div>
 
-  <div class="row">
-    <div class="col-auto">
-      <a class="btn btn-info btn-block" href="{{url_for('home') }}">Volver al inicio</a>
-    </div>
-  </div>
 </div>
 
 
