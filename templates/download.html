@@ -5,6 +5,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-4">
+      <!-- Video image  -->
       <div> 
           <img src="{{url.thumbnail_url}}" class="card-img" alt="{{url.title}}">
       </div>
@@ -17,7 +18,7 @@
         <h4 class="text-center">{{ url.title }}</h4>
       </div>
 
-      <!--Formulario video-->
+        <!--Video Form-->
    
         <form method="POST" action="{{ url_for('download_video') }}">
           <select name="itag" class="form-select input-sm" aria-label="Default select example">
@@ -26,7 +27,9 @@
                 <option value="{{ i.itag }}"> {{ i.resolution }}  ({{ i.filesize_mb }} MB)</option>
             {% endfor %}
           </select>
-          <!--Boton para descargar-->
+          
+          <!-- Download button -->
+            
             <div class="text-center">
               <button type="submit" class="btn btn-danger mt-3" href="{{ url_for('download_video') }}">
                 Download video
@@ -40,7 +43,7 @@
     <div class="col-md-4">
         <h2 class="text-center">Audio downloader</h2>
 
-        <!--Formulario audio-->
+        <!-- Audio Form -->
         <form method="POST" action="{{ url_for('download_audio') }}">
           <div class="card-text text-center">
             <button class="btn btn-warning mt-3" type="" href="{{ url_for('download_audio') }}">
@@ -48,14 +51,14 @@
             </button>
           </div>
         </form>
+        
+        <!-- Home redirection button -->
         <div class="text-center mt-4">
           <a class="btn btn-info btn-block" href="{{url_for('home') }}">Home</a>
         </div>
 
     </div>
     </div>
-
-   
     
   </div>
   </div>

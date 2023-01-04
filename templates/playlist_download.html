@@ -14,7 +14,9 @@
         </div>
 
         <div class="col-md-4 text-center"> 
-          <!--Formulario audio-->
+          
+          <!--  Audio Form -->
+          
           <form method="POST" action="{{ url_for('playlist_download') }}">
             <div class="">
               <button id="download-button" class="btn btn-warning mt-3" type="" href="{{ url_for('playlist_download') }}">
@@ -22,6 +24,9 @@
               </button>
             </div>
           </form>
+
+            <!-- Download another playlist button -->
+
             <div class="text-center mt-4">
               <a class="btn btn-info btn-block" href="{{url_for('playlist') }}">Descargar otra playlist</a>
             </div>

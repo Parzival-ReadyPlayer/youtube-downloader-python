@@ -19,15 +19,15 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 # Handlers
 
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found_404(error):
     return render_template('404.html', error=error), 404
 
 
 @app.errorhandler(500)
-def page_not_found(error):
+def page_not_found_500(error):
     return render_template('500.html',error=error), 500
 
-# Formulario
+# Form
 class linkForm(FlaskForm):
     link = StringField('Youtube link', validators=[DataRequired()])
     submit = SubmitField('Descargar')
@@ -38,18 +38,16 @@ class playlistForm(FlaskForm):
     
 def is_valid_url(url):
     try:
-        # Hace una solicitud a la URL y almacena la respuesta
+        # Makes a request to the URL and stores the response
         response = requests.get(url)
 
-        # Si la respuesta tiene un código de estado OK (200)
+        # If the response has an OK status code (200)
         if response.status_code == 200:
-            # Regresa True
             return True
         else:
-            # Si no es OK, regresa False
             return False
     except:
-        # Si ocurre cualquier otro error, regresa False
+        # If any other error occurs, return False
         return False
 
 @app.route("/", methods = ["GET", "POST"])
@@ -58,7 +56,6 @@ def home():
     
     if request.method == "POST":
         try:
-            
             if is_valid_url(request.form.get('link')):
                 session['link'] = request.form.get('link')
                 try:
@@ -79,9 +76,7 @@ def home():
 def download_audio():
     if request.method == "POST":
         buffer = BytesIO()
-        print(f"esto es buffer {buffer}")
         url = YouTube(session['link'])
-        print(url)
         name = url.title + '.mp3'
         audio = url.streams.get_audio_only()
         audio.stream_to_buffer(buffer)
@@ -134,54 +129,53 @@ def playlist():
 
 
 
-# Crea una función para descargar una canción individual
+# Function to download an individual song
 def download_song(video):
-    # Crea un buffer de bytes para almacenar el audio
+    # Create a byte buffer to store the audio
     buffer = BytesIO()
 
-    # Obtiene el título de la canción y el audio en formato MP3
+    # Get song title and audio in MP3 format
     name = video.title + '.mp3'
     audio = video.streams.get_audio_only()
 
-    # Escribe el audio en el buffer
+    # Write the audio to the buffer
     audio.stream_to_buffer(buffer)
 
-    # Regresa al principio del buffer
+    # Return to the beginning of the buffer
     buffer.seek(0)
 
-    # Regresa el buffer como un archivo adjunto
+    # Return the buffer as an attachment
     return buffer
 
 
 
 @app.route("/playlist_download", methods = ["POST"])
 def playlist_download():
-    # Crea un buffer de bytes para almacenar el archivo ZIP
+    # Create a byte buffer to store the ZIP file
     buffer = BytesIO()
 
-    # Crea un archivo ZIP en el buffer
+    # Create a ZIP file in the buffer
     with ZipFile(buffer, 'w') as zip:
-        # Si se hace una solicitud POST
+        # If a POST request is made
         if request.method == 'POST':
-            # Crea una instancia de Playlist con la URL de la playlist
+            # Create a Playlist instance with the playlist URL
             playlist = Playlist(session['link'])
             
             name_playlist = playlist.title
             
-            print(name_playlist)
 
-            # Para cada video en la playlist
+            # For each video in the playlist
             for video in playlist.videos:
-                # Descarga la canción
+                # Download the song
                 song = download_song(video)
 
-                # Agrega la canción al archivo ZIP
+                # Add the song to the ZIP file
                 zip.writestr(video.title + '.mp3', song.getvalue())
 
-    # Regresa al principio del buffer
+    # Return to the beginning of the buffer
     buffer.seek(0)
     
-    # Crea una respuesta con el archivo adjunto
+    # Create a reply with the attached file
     return send_file(buffer, as_attachment=True, mimetype='application/zip', download_name=name_playlist + '.zip')
 
 
