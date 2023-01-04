@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash, send_file, session, make_response
+from flask import Flask, render_template, url_for, redirect, request, flash, send_file, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -14,6 +14,18 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+
+
+# Handlers
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html', error=error), 404
+
+
+@app.errorhandler(500)
+def page_not_found(error):
+    return render_template('500.html',error=error), 500
 
 # Formulario
 class linkForm(FlaskForm):
