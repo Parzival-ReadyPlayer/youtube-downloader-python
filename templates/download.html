@@ -4,12 +4,17 @@
 
 <div class="container">
   <div class="row">
+    
+    <!-- First column -->
+    
     <div class="col-md-4">
       <!-- Video image  -->
       <div> 
           <img src="{{url.thumbnail_url}}" class="card-img" alt="{{url.title}}">
       </div>
     </div>
+
+    <!-- Second column -->
     <div class="col-md-4">
 
       <!--Video downloader-->
@@ -31,13 +36,15 @@
           <!-- Download button -->
             
             <div class="text-center">
-              <button type="submit" class="btn btn-danger mt-3" href="{{ url_for('download_video') }}">
+              <button  type="submit" class="btn btn-danger mt-3" href="{{ url_for('download_video') }}">
                 Download video
               </button>
             </div>     
         </form>
         <!---->
     </div>
+
+    <!-- Third column -->
 
     <!--Audio downloader-->
     <div class="col-md-4">
@@ -64,7 +71,6 @@
   </div>
 
 </div>
-
 
 
   

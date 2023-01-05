@@ -50,30 +50,32 @@ def is_valid_url(url):
         # If any other error occurs, return False
         return False
 
+
+
+
 @app.route("/", methods = ["GET", "POST"])
 def home():
     form = linkForm()
     
     if request.method == "POST":
-        try:
-            if is_valid_url(request.form.get('link')):
-                session['link'] = request.form.get('link')
-                try:
-                    url = YouTube(session['link'])
-                    url.check_availability()
-                except:
-                    print("url no disponible")
-                return render_template("download.html", url = url, form = form)
-            else:
-                flash('No es un link valido', 'danger')
-        except:
-            flash('Link invalido', 'danger')
-            return redirect(url_for('home'))
+        
+        if is_valid_url(request.form.get('link')):
+            session['link'] = request.form.get('link')
+            try:
+                url = YouTube(session['link'])
+                url.check_availability()
+            except:
+                print("url no disponible")
+            return render_template("download.html", url = url, form = form)
+        else:
+            flash('No es un link valido', 'danger')
+
+        return redirect(url_for('home'))
     return render_template("home.html", form=form)
 
 
 @app.route("/download_audio", methods = ["GET", "POST"])
-def download_audio():
+def download_audio():   
     if request.method == "POST":
         buffer = BytesIO()
         url = YouTube(session['link'])
@@ -85,9 +87,10 @@ def download_audio():
     return redirect(url_for("home"))
 
 @app.route("/download_video", methods = ["GET", "POST"])
-def download_video():
+def download_video():    
     # Action of the method POST 
     if request.method == "POST":
+        
         # Create a buffer to save songs
         buffer = BytesIO()
         # Instantiate a Youtube object
@@ -181,4 +184,4 @@ def playlist_download():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
