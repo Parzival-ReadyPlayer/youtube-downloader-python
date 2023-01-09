@@ -9,12 +9,10 @@ import os, requests
 
 
 
-
 app = Flask(__name__)
 
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-
-
 
 # Handlers
 

@@ -36,7 +36,7 @@
           <!-- Download button -->
             
             <div class="text-center">
-              <button  type="submit" class="btn btn-danger mt-3" href="{{ url_for('download_video') }}">
+              <button id="descargar-video" type="submit" class="btn btn-danger mt-3" href="{{ url_for('download_video') }}">
                 Download video
               </button>
             </div>     
@@ -53,7 +53,7 @@
         <!-- Audio Form -->
         <form method="POST" action="{{ url_for('download_audio') }}">
           <div class="card-text text-center">
-            <button class="btn btn-warning mt-3" type="" href="{{ url_for('download_audio') }}">
+            <button id="descargar-audio" class="btn btn-warning mt-3" type="" href="{{ url_for('download_audio') }}">
               Download audio 
             </button>
           </div>
@@ -72,6 +72,68 @@
 
 </div>
 
+<div id="mensaje" class="container mt-4" style="display:none">
+  <div class="row">
+      <div class="col">
+        <button class="btn btn-danger btn-lg" type="button" disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Descargando, por favor espere..
+        </button>
+      </div>
+  </div>
+</div>
 
+ 
+
+
+
+<script>
+  // Obtiene el botón de descarga de audio
+  var descargarAudioBtn = document.getElementById("descargar-audio");
+  // Agrega un manejador de evento al hacer clic en el botón
+  descargarAudioBtn.addEventListener("click", function() {
+    // Muestra el mensaje
+    document.getElementById("mensaje").style.display = "block";
+    // Realiza la descarga en segundo plano
+    fetch("{{ url_for('download_audio') }}", { method: "POST" })
+      .then(function(response) {
+        // Oculta el mensaje
+        document.getElementById("mensaje").style.display = "none";
+      });
+  });
+   // Crea una bandera para controlar si el formulario ha sido enviado
+   var enviado = false;
+
+   // Obtiene el botón de descarga de video
+   var descargarVideoBtn = document.getElementById("descargar-video");
+   // Agrega un manejador de evento al hacer clic en el botón
+   descargarVideoBtn.addEventListener("click", function(event) {
+     // Si el formulario ya ha sido enviado, cancela el evento
+     if (enviado) {
+       event.preventDefault();
+       return;
+     }
+ 
+     // Muestra el mensaje
+     document.getElementById("mensaje").style.display = "block";
+ 
+     // Envía una solicitud POST utilizando Ajax
+     fetch(this.form.action, { method: "POST", body: new FormData(this.form) })
+       .then(function(response) {
+         // Si la descarga ha sido exitosa
+         if (response.status === 200) {
+           // Oculta el mensaje
+           document.getElementById("mensaje").style.display = "none";
+           // Establece la bandera enviado en true
+           enviado = true;
+           // Envía el formulario de forma síncrona
+           this.form.submit();
+         }
+       });
+   });
+</script>
   
 {% endblock content %}
+
+
+

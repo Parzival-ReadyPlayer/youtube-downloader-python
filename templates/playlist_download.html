@@ -19,7 +19,7 @@
           
           <form method="POST" action="{{ url_for('playlist_download') }}">
             <div class="">
-              <button id="download-button" class="btn btn-warning mt-3" type="" href="{{ url_for('playlist_download') }}">
+              <button id="descargar-playlist" class="btn btn-warning mt-3" type="" href="{{ url_for('playlist_download') }}">
                 Download playlist 
               </button>
             </div>
@@ -35,8 +35,35 @@
 
   </div>
 </div>
-    
 
+
+<div id="mensaje" class="container mt-4" style="display:none">
+  <div class="row">
+      <div class="col">
+        <button class="btn btn-danger btn-lg" type="button" disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Descargando playlist, por favor espere en la pagina, se descargara una carpeta con sus canciones..
+        </button>
+      </div>
+  </div>
+</div>
+
+    
+<script>
+  // Obtiene el botón de descarga de audio
+  var descargarAudioBtn = document.getElementById("descargar-playlist");
+  // Agrega un manejador de evento al hacer clic en el botón
+  descargarAudioBtn.addEventListener("click", function() {
+    // Muestra el mensaje
+    document.getElementById("mensaje").style.display = "block";
+    // Realiza la descarga en segundo plano
+    fetch("{{ url_for('playlist_download') }}", { method: "POST" })
+      .then(function(response) {
+        // Oculta el mensaje
+        document.getElementById("mensaje").style.display = "none";
+      });
+  });
+</script>
 
 {% endblock content %}
 
