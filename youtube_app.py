@@ -94,7 +94,7 @@ def download_video():
         # Instantiate a Youtube object
         url = YouTube(session['link'])
         # Save song title
-        name = url.title
+        name = url.title + '.mp4'
         # Quality of video
         itag = request.form.get('itag')
         # Get song by itag
