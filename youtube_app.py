@@ -42,7 +42,7 @@ def is_valid_url(url):
         # If the response has an OK status code (200)
         if response.status_code == 200:
             return True
-        else:
+        else:           
             return False
     except:
         # If any other error occurs, return False
@@ -66,8 +66,7 @@ def home():
                 print("url no disponible")
             return render_template("download.html", url = url, form = form)
         else:
-            flash('No es un link valido', 'danger')
-
+            pass
         return redirect(url_for('home'))
     return render_template("home.html", form=form)
 
@@ -95,10 +94,7 @@ def download_video():
         url = YouTube(session['link'])
         # Save song title
         name = url.title + '.mp4'
-        # Quality of video
-        itag = request.form.get('itag')
-        # Get song by itag
-        video = url.streams.get_by_itag(itag)
+        video = url.streams.get_by_resolution(resolution="720p")
         # Send to buffer
         video.stream_to_buffer(buffer)
         # Sets the reference point at the beginning of the file 
@@ -182,4 +178,4 @@ def playlist_download():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
